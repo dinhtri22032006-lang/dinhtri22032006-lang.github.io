@@ -3,358 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TBSG - Bản demo | baithuctap.id.vn</title>
+  <title>TBSG Integration - Bản đầy đủ</title>
   <link rel="icon" href="logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="site.css">
   <style>
-    body.login-active { overflow: hidden; }
-    #loginScreen {
-      position: fixed; inset: 0; z-index: 2000;
-      display: flex; align-items: center; justify-content: center;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif; color: #e8eef7;
       background:
         radial-gradient(1100px 460px at 18% -12%, #2ea3ff22 0%, transparent 55%),
         radial-gradient(900px 420px at 110% 108%, #7b5bff33 0%, transparent 55%),
         radial-gradient(1300px 600px at 50% 118%, #0d2b52 0%, transparent 60%),
         linear-gradient(160deg, #12203a 0%, #0b1320 100%);
+      position: relative; overflow: hidden;
     }
-    #loginScreen::before {
-      content: "TBSG";
-      position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%, -54%);
-      font-size: clamp(180px, 34vw, 420px); font-weight: 900;
-      letter-spacing: 6px; line-height: 1; color: rgba(46,163,255,.05);
-      font-family: "Segoe UI", system-ui, sans-serif;
-      pointer-events: none; user-select: none;
-      text-shadow: 0 0 60px rgba(46,163,255,.10);
+    body::before {
+      content: "TBSG"; position: fixed; inset: auto; bottom: -60px; right: -10px;
+      font-size: 220px; font-weight: 800; color: #24365c33; pointer-events: none; z-index: 0;
     }
-    .login-card {
-      position: relative; z-index: 1; width: min(380px, 92vw);
-      background: #141c2b; border: 1px solid #24334a; border-radius: 16px;
-      padding: 36px 32px 28px; box-shadow: 0 24px 60px rgba(0,0,0,.45);
+    body::after {
+      content: ""; position: fixed; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+      background-size: 56px 56px; z-index: 0;
     }
-    .login-card .logo-big {
-      width: 66px; height: 66px; margin: 0 auto 14px;
-      display: flex; align-items: center; justify-content: center;
-      filter: drop-shadow(0 6px 18px rgba(46,163,255,.35));
+    .card {
+      position: relative; z-index: 1; text-align: center; max-width: 560px; padding: 28px;
     }
-    .login-card .logo-big img { width: 100%; height: 100%; }
-    .login-card h1 { text-align: center; font-size: 20px; margin: 0 0 4px; }
-    .login-card .company { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 22px; }
-    .login-card input { width: 100%; box-sizing: border-box; margin-top: 5px; }
-    .login-card .btn { display: block; width: 100%; margin-top: 14px; padding: 11px; font-size: 15px; }
-    .demo-note {
-      margin-top: 16px; padding: 10px 12px; border-radius: 10px;
-      background: rgba(255,176,46,.12); border: 1px solid rgba(255,176,46,.4);
-      color: var(--amber); font-size: 12.5px; line-height: 1.5; text-align: center;
+    .logo { width: 84px; height: 84px; margin-bottom: 22px;
+      filter: drop-shadow(0 10px 26px #2ea3ff33); }
+    h1 { font-size: 30px; letter-spacing: .5px; margin-bottom: 6px; }
+    h1 strong { color: #4db8ff; }
+    .sub { color: #9fb4d4; margin-bottom: 26px; font-size: 15px; }
+    .badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+    .badge { font-size: 12px; padding: 6px 12px; border-radius: 999px;
+      background: #122a4a88; border: 1px solid #2ea3ff44; color: #bcd4f4; }
+    a.open {
+      display: inline-block; padding: 14px 34px; border-radius: 12px; text-decoration: none;
+      font-size: 17px; font-weight: 600; color: #fff;
+      background: linear-gradient(135deg, #2ea3ff 0%, #7b5bff 100%);
+      box-shadow: 0 12px 34px #2ea3ff44; transition: transform .12s ease;
     }
-    .view { display: none; }
-    .view.active { display: block; }
-    #bannerDemo {
-      background: linear-gradient(90deg, #7d5b14, #a8781d);
-      color: #ffe9b3; text-align: center; font-size: 13px; padding: 6px 12px;
-      border-bottom: 1px solid #c99a2e; position: sticky; top: 0; z-index: 999;
+    a.open:hover { transform: translateY(-2px); }
+    .count { margin-top: 18px; font-size: 13px; color: #7d91b3; }
+    .count b { color: #4db8ff; }
+    .note { margin-top: 26px; font-size: 12px; color: #65779a; line-height: 1.6; }
+    @media (max-width: 520px) {
+      body::before { font-size: 130px; }
+      h1 { font-size: 23px; }
     }
-    .photo-ph {
-      width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;
-      background: linear-gradient(135deg, #15202e, #1d2a3c);
-    }
-    .photo-ph::after { content: "DEMO"; display:flex; align-items:center; justify-content:center; height:100%; color:#3b4d66; font-weight:800; letter-spacing:4px; }
   </style>
-</head>
-<body class="login-active">
-  <div id="loginScreen">
-    <div class="login-card">
-      <div class="logo-big"><img src="logo.svg" alt="TBSG"></div>
-      <h1>TBSG</h1>
-      <div class="company">Hệ thống quản lý ra/vào &amp; chấm công</div>
-      <label>Đăng nhập</label>
-      <input id="user" value="admin" autocomplete="off">
-      <label>Mật khẩu</label>
-      <input id="pass" type="password" value="demo">
-      <button class="btn primary" onclick="enterDemo()">Đăng nhập (Demo)</button>
-      <div class="demo-note">Bản demo tĩnh trên GitHub Pages — chưa nối máy chủ Gallagher.<br>Bản đầy đủ chạy trên thiết bị của bạn: <b>baithuctap.id.vn</b></div>
-    </div>
-  </div>
-
-  <div id="appShell" style="display:none">
-    <div id="bannerDemo">Demo trên GitHub Pages — dữ liệu mẫu, Web đầy đủ chạy tại baithuctap.id.vn</div>
-    <nav class="topbar">
-      <div class="brand">
-        <span class="logo"><img src="logo.svg" alt="TBSG"></span>
-        <div>
-          <strong>TBSG Integration</strong>
-          <small>baithuctap.id.vn</small>
-        </div>
-      </div>
-      <ul class="menu" id="menu">
-        <li><a href="#tongquan" data-view="tongquan" class="active">Tổng quan</a></li>
-        <li><a href="#sukien" data-view="sukien">Sự kiện</a></li>
-        <li><a href="#canhbao" data-view="canhbao">Cảnh báo</a></li>
-        <li><a href="#nhan-su" data-view="nhan-su">Nhân sự / Thẻ</a></li>
-        <li><a href="#cham-cong" data-view="cham-cong">Chấm công</a></li>
-        <li><a href="#que-cua" data-view="que-cua">Quẹt cửa ra vào</a></li>
-        <li><a href="#camera" data-view="camera">Camera</a></li>
-      </ul>
-      <div class="right">
-        <span id="clock" class="clock"></span>
-        <span id="modeBadge" class="badge live">LIVE</span>
-        <span class="badge" style="margin-left:6px;background:#1e2c40;border:1px solid #283d5c;font-size:12px">admin <span style="color:var(--green)">(Admin)</span></span>
-      </div>
-    </nav>
-
-    <main class="container">
-
-      <!-- ============ TỔNG QUAN ============ -->
-      <section id="view-tongquan" class="view active">
-        <h1>Tổng quan hệ thống</h1>
-        <p class="sub">Bản demo — thống kê mẫu tại baithuctap.id.vn</p>
-        <div class="tiles">
-          <div class="tile info"><div class="t-label">Nhân viên</div><div class="t-value">42</div><div class="t-sub">+2 tháng này</div></div>
-          <div class="tile ok"><div class="t-label">Thẻ đang hoạt động</div><div class="t-value">40</div><div class="t-sub">2 thẻ bị vô hiệu</div></div>
-          <div class="tile ok"><div class="t-label">Đã chấm công hôm nay</div><div class="t-value">35</div><div class="t-sub">/ 42 nhân viên</div></div>
-          <div class="tile info"><div class="t-label">Xe trong bãi</div><div class="t-value">12</div><div class="t-sub">7 vào - 5 ra</div></div>
-          <div class="tile ok"><div class="t-label">Camera trực tuyến</div><div class="t-value">3/3</div><div class="t-sub">tất cả hoạt động</div></div>
-          <div class="tile warn"><div class="t-label">Sự kiện hôm nay</div><div class="t-value">128</div><div class="t-sub">đồng bộ mỗi 8s</div></div>
-          <div class="tile warn"><div class="t-label">Cảnh báo chưa xử lý</div><div class="t-value">3</div><div class="t-sub">tổng 6</div></div>
-        </div>
-
-        <div class="grid two">
-          <div class="card">
-            <h2>Sự kiện gần đây <small>(8 mới nhất)</small></h2>
-            <table class="tbl mini">
-              <thead><tr><th>Thời gian</th><th>Nhân sự</th><th>Cửa</th><th>Hướng</th></tr></thead>
-              <tbody>
-                <tr><td class="mono">09:41:02</td><td>Lê Minh Trí</td><td>Cổng chính</td><td class="inTime">VÀO</td></tr>
-                <tr><td class="mono">09:38:44</td><td>Nguyễn Thu Hà</td><td>Cổng phụ</td><td class="inTime">VÀO</td></tr>
-                <tr><td class="mono">09:35:11</td><td>Trần Văn Nam</td><td>Cổng chính</td><td>RA</td></tr>
-                <tr><td class="mono">09:30:57</td><td>Phạm Minh Anh</td><td>Cổng chính</td><td class="inTime">VÀO</td></tr>
-                <tr><td class="mono">09:25:31</td><td>Vũ Hoàng Long</td><td>Cổng phụ</td><td class="inTime">VÀO</td></tr>
-                <tr><td class="mono">09:20:18</td><td>Hoàng Thu Trang</td><td>Cổng chính</td><td class="inTime">VÀO</td></tr>
-                <tr><td class="mono">09:12:03</td><td>Đỗ Quang Huy</td><td>Cổng chính</td><td>RA</td></tr>
-                <tr><td class="mono">09:05:46</td><td>Bùi Thanh Mai</td><td>Cổng phụ</td><td class="inTime">VÀO</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <div class="card">
-              <h2>Cảnh báo chưa xử lý</h2>
-              <table class="tbl mini">
-                <thead><tr><th>Cảnh báo</th><th>Mức</th><th>Trạng thái</th></tr></thead>
-                <tbody>
-                  <tr class="rowAlarm"><td>Cửa mở lâu</td><td><span class="state st-unacknowledged">Tới hạn</span></td><td><span class="state st-unacknowledged">Chưa xử lý</span></td></tr>
-                  <tr class="rowAlarm"><td>Thẻ hết hạn</td><td><span class="state st-unacknowledged">Tới hạn</span></td><td><span class="state st-unacknowledged">Chưa xử lý</span></td></tr>
-                  <tr class="rowAlarm"><td>Xâm nhập trái phép</td><td><span class="state st-unacknowledged">Khẩn cấp</span></td><td><span class="state st-unacknowledged">Chưa xử lý</span></td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="card camov">
-              <h2>Camera</h2>
-              <div class="camov-grid">
-                <div class="camov-item"><span class="cam-dot on"></span><span>Camera 1 - Cổng chính</span><span class="muted">ON</span></div>
-                <div class="camov-item"><span class="cam-dot on"></span><span>Camera 2 - Bãi xe</span><span class="muted">ON</span></div>
-                <div class="camov-item"><span class="cam-dot on"></span><span>Camera 3 - Sảnh</span><span class="muted">ON</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============ SỰ KIỆN ============ -->
-      <section id="view-sukien" class="view">
-        <h1>Sự kiện</h1>
-        <p class="sub">Luồng sự kiện quẹt thẻ mẫu tại cổng ra/vào</p>
-        <div class="card">
-          <table class="tbl">
-            <thead><tr><th>Thời gian</th><th>Nhân sự</th><th>Cửa</th><th>Hướng</th><th>Trạng thái</th></tr></thead>
-            <tbody>
-              <tr><td class="mono">09:41:02</td><td>Lê Minh Trí</td><td>Cổng chính</td><td class="inTime">VÀO</td><td><span class="state st-ok">Được phép</span></td></tr>
-              <tr><td class="mono">09:38:44</td><td>Nguyễn Thu Hà</td><td>Cổng phụ</td><td class="inTime">VÀO</td><td><span class="state st-ok">Được phép</span></td></tr>
-              <tr><td class="mono">09:35:11</td><td>Trần Văn Nam</td><td>Cổng chính</td><td>RA</td><td><span class="state st-ok">Được phép</span></td></tr>
-              <tr><td class="mono">09:30:57</td><td>Phạm Minh Anh</td><td>Cổng chính</td><td class="inTime">VÀO</td><td><span class="state st-ok">Được phép</span></td></tr>
-              <tr><td class="mono">09:25:31</td><td>Vũ Hoàng Long</td><td>Cổng phụ</td><td class="inTime">VÀO</td><td><span class="state st-ok">Được phép</span></td></tr>
-              <tr><td class="mono">09:20:18</td><td>Hoàng Thu Trang</td><td>Cổng chính</td><td class="inTime">VÀO</td><td><span class="state st-ok">Được phép</span></td></tr>
-              <tr class="rowLeave"><td class="mono">09:12:03</td><td>Đỗ Quang Huy</td><td>Cổng chính</td><td>RA</td><td><span class="state st-ok">Được phép</span></td></tr>
-              <tr><td class="mono">09:05:46</td><td>Bùi Thanh Mai</td><td>Cổng phụ</td><td class="inTime">VÀO</td><td><span class="state st-ok">Được phép</span></td></tr>
-              <tr><td class="mono err">09:05:50</td><td>Thẻ lạ (GGL-999)</td><td>Cổng phụ</td><td>VÀO</td><td><span class="state st-unacknowledged">Từ chối</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ============ CẢNH BÁO ============ -->
-      <section id="view-canhbao" class="view">
-        <h1>Cảnh báo</h1>
-        <p class="sub">Danh sách cảnh báo mẫu theo 30 ngày gần nhất</p>
-        <div class="alarm-head">
-          <div class="alarm-stat"><strong>3</strong><span>Chưa xử lý</span></div>
-          <div class="alarm-stat"><strong>6</strong><span>Tổng cảnh báo</span></div>
-          <div class="alarm-filters">
-            <select onchange="toast('Demo: thay đổi khoảng thời gian')">
-              <option>Hôm nay</option><option>7 ngày</option><option selected>30 ngày</option><option>90 ngày</option><option>Tất cả</option>
-            </select>
-            <select onchange="toast('Demo: thay đổi trạng thái')">
-              <option selected>Tất cả</option><option>Chưa xử lý</option><option>Đã xử lý</option>
-            </select>
-          </div>
-        </div>
-        <div class="card">
-          <table class="tbl">
-            <thead><tr><th>Thời gian</th><th>Cảnh báo</th><th>Nguồn</th><th>Mức</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
-            <tbody>
-              <tr class="rowAlarm"><td class="mono">2026-09-28 09:12</td><td>Xâm nhập trái phép</td><td>Cổng chính</td><td><span class="prio p9">KHẨN CẤP</span></td><td><span class="state st-unacknowledged">Chưa xử lý</span></td><td class="actions"><button class="btn small primary" onclick="toast('Demo: đã xử lý trên web thật')">✓ Xử lý</button></td></tr>
-              <tr class="rowAlarm"><td class="mono">2026-09-27 22:40</td><td>Thẻ hết hạn</td><td>Cổng phụ</td><td><span class="prio p7">TỚI HẠN</span></td><td><span class="state st-unacknowledged">Chưa xử lý</span></td><td class="actions"><button class="btn small primary" onclick="toast('Demo: đã xử lý trên web thật')">✓ Xử lý</button></td></tr>
-              <tr class="rowAlarm"><td class="mono">2026-09-26 18:05</td><td>Cửa mở lâu</td><td>Cổng chính</td><td><span class="prio p7">TỚI HẠN</span></td><td><span class="state st-unacknowledged">Chưa xử lý</span></td><td class="actions"><button class="btn small primary" onclick="toast('Demo: đã xử lý trên web thật')">✓ Xử lý</button></td></tr>
-              <tr><td class="mono">2026-09-25 14:22</td><td>Quẹt thẻ trái giờ</td><td>Cổng phụ</td><td><span class="prio p4">THÔNG TIN</span></td><td><span class="state st-processed">Đã xử lý</span></td><td class="actions"><span class="muted">—</span></td></tr>
-              <tr><td class="mono">2026-09-24 11:47</td><td>Cổng phụ đóng trễ</td><td>Cổng phụ</td><td><span class="prio p4">THÔNG TIN</span></td><td><span class="state st-processed">Đã xử lý</span></td><td class="actions"><span class="muted">—</span></td></tr>
-              <tr><td class="mono">2026-09-23 08:15</td><td>Mất kết nối đọc thẻ</td><td>Ghi đọc</td><td><span class="prio p7">TỚI HẠN</span></td><td><span class="state st-processed">Đã xử lý</span></td><td class="actions"><span class="muted">—</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ============ NHÂN SỰ ============ -->
-      <section id="view-nhan-su" class="view">
-        <h1>Nhân sự &amp; Thẻ từ</h1>
-        <div class="tabs">
-          <button class="tab-btn active">Danh sách 42</button>
-          <button class="tab-btn" onclick="toast('Demo: mở thêm nhân sự trên web thật')">＋ Thêm nhân sự</button>
-        </div>
-        <div class="card">
-          <table class="tbl">
-            <thead><tr><th>Mã NV</th><th>Họ tên</th><th>Phòng ban</th><th>Số thẻ</th><th>Hiệu lực</th><th>Trạng thái</th></tr></thead>
-            <tbody>
-              <tr><td class="mono">GGL693</td><td>REST API Operator</td><td>Từ Gallagher</td><td class="mono">GGL-693</td><td><select class="validity v-valid"><option>Valid</option><option>Absent</option><option>Cancelled</option></select></td><td><span class="state st-ok">Hoạt động</span></td></tr>
-              <tr><td class="mono">GGL697</td><td>Lê Minh Trí</td><td>Kỹ thuật</td><td class="mono">1</td><td><select class="validity v-valid"><option>Valid</option><option>Absent</option><option>Cancelled</option></select></td><td><span class="state st-ok">Hoạt động</span></td></tr>
-              <tr><td class="mono">GGL702</td><td>Nguyễn Thu Hà</td><td>Kế toán</td><td class="mono">GGL-702</td><td><select class="validity v-valid"><option>Valid</option><option>Absent</option><option>Cancelled</option></select></td><td><span class="state st-ok">Hoạt động</span></td></tr>
-              <tr><td class="mono">GGL705</td><td>Trần Văn Nam</td><td>Bảo vệ</td><td class="mono">GGL-705</td><td><select class="validity v-absent"><option>Valid</option><option selected>Absent</option><option>Cancelled</option></select></td><td><span class="state st-unacknowledged">Vắng mặt</span></td></tr>
-              <tr><td class="mono">GGL708</td><td>Vũ Hoàng Long</td><td>Kinh doanh</td><td class="mono">GGL-708</td><td><select class="validity v-valid"><option>Valid</option><option>Absent</option><option>Cancelled</option></select></td><td><span class="state st-ok">Hoạt động</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ============ CHẤM CÔNG ============ -->
-      <section id="view-cham-cong" class="view">
-        <h1>Dashboard Chấm công</h1>
-        <p class="sub">Hôm nay (demo)</p>
-        <div class="tiles">
-          <div class="tile ok"><div class="t-label">Vào đúng giờ</div><div class="t-value">28</div></div>
-          <div class="tile warn"><div class="t-label">Vào muộn</div><div class="t-value">4</div></div>
-          <div class="tile info"><div class="t-label">Vào sớm</div><div class="t-value">3</div></div>
-          <div class="tile info"><div class="t-label">Nghỉ phép</div><div class="t-value">6</div></div>
-        </div>
-        <div class="card">
-          <h2>Luồng chấm công trực tiếp</h2>
-          <ul class="feed">
-            <li class="fin"><span class="dir">VÀO</span><div><div class="who">Lê Minh Trí</div><div class="door">Cổng chính</div></div><time>09:41:02</time></li>
-            <li class="fin"><span class="dir">VÀO</span><div><div class="who">Nguyễn Thu Hà</div><div class="door">Cổng phụ</div></div><time>09:38:44</time></li>
-            <li class="fout"><span class="dir">RA</span><div><div class="who">Trần Văn Nam</div><div class="door">Cổng chính</div></div><time>09:35:11</time></li>
-            <li class="fin"><span class="dir">VÀO</span><div><div class="who">Phạm Minh Anh</div><div class="door">Cổng chính</div></div><time>09:30:57</time></li>
-            <li class="fin"><span class="dir">VÀO</span><div><div class="who">Vũ Hoàng Long</div><div class="door">Cổng phụ</div></div><time>09:25:31</time></li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- ============ QUẸT CỬA ============ -->
-      <section id="view-que-cua" class="view">
-        <h1>Thông tin quẹt cửa ra vào</h1>
-        <p class="sub">Xe ra/vào kèm biển số (demo)</p>
-        <div class="parking-grid">
-          <div class="park-card in">
-            <header><span class="dir">XE VÀO</span><time>09:41:02</time></header>
-            <div class="who"><span>Lê Minh Trí</span><span class="muted">Kỹ thuật</span></div>
-            <figure class="photos">
-              <span class="photo-ph"></span><span class="photo-ph"></span>
-            </figure>
-            <footer>
-              <span class="plate-mini big">51F-123.45</span>
-              <span class="door">Cổng chính</span>
-            </footer>
-          </div>
-          <div class="park-card out">
-            <header><span class="dir">XE RA</span><time>09:12:03</time></header>
-            <div class="who"><span>Đỗ Quang Huy</span><span class="muted">Bảo vệ</span></div>
-            <figure class="photos">
-              <span class="photo-ph"></span><span class="photo-ph"></span>
-            </figure>
-            <footer>
-              <span class="plate-mini big">30A-777.89</span>
-              <span class="door">Cổng chính</span>
-            </footer>
-          </div>
-          <div class="park-card in">
-            <header><span class="dir">XE VÀO</span><time>08:58:31</time></header>
-            <div class="who"><span>Nguyễn Thu Hà</span><span class="muted">Kế toán</span></div>
-            <figure class="photos">
-              <span class="photo-ph"></span><span class="photo-ph"></span>
-            </figure>
-            <footer>
-              <span class="plate-mini big">43B-888.02</span>
-              <span class="door">Cổng phụ</span>
-            </footer>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============ CAMERA ============ -->
-      <section id="view-camera" class="view">
-        <h1>Camera trực tiếp</h1>
-        <p class="sub">Khung xem mẫu — luồng thật chạy trên web đầy đủ</p>
-        <div class="cameras">
-          <div class="cam-card">
-            <header><strong>Camera 1 - Cổng chính <span class="cam-dot on"></span></strong><div class="cam-actions"><button class="btn small">Chất lượng cao</button></div></header>
-            <div class="cam-stage"><span class="photo-ph" style="aspect-ratio:16/9"></span></div>
-            <footer><span class="cam-status">● Đang phát</span><span class="muted">ffmpeg - hi · HLS</span></footer>
-          </div>
-          <div class="cam-card">
-            <header><strong>Camera 2 - Bãi xe <span class="cam-dot on"></span></strong><div class="cam-actions"><button class="btn small">Chất lượng cao</button></div></header>
-            <div class="cam-stage"><span class="photo-ph" style="aspect-ratio:16/9"></span></div>
-            <footer><span class="cam-status">● Đang phát</span><span class="muted">ffmpeg - hi · HLS</span></footer>
-          </div>
-          <div class="cam-card">
-            <header><strong>Camera 3 - Sảnh <span class="cam-dot on"></span></strong><div class="cam-actions"><button class="btn small">Chất lượng cao</button></div></header>
-            <div class="cam-stage"><span class="photo-ph" style="aspect-ratio:16/9"></span></div>
-            <footer><span class="cam-status">● Đang phát</span><span class="muted">ffmpeg - hi · HLS</span></footer>
-          </div>
-        </div>
-      </section>
-
-    </main>
-    <div class="footer">TBSG — Hệ thống quản lý ra/vào &amp; chấm công · demo static trên GitHub Pages ·
-      Web đầy đủ chạy tại <a href="http://baithuctap.id.vn:5000">baithuctap.id.vn</a></div>
-  </div>
-
   <script>
-    function enterDemo(){ document.getElementById('appShell').style.display='block'; document.getElementById('loginScreen').style.display='none'; document.body.classList.remove('login-active'); }
-    document.getElementById('user').addEventListener('keydown',e=>{ if(e.key==='Enter')enterDemo(); });
-    document.getElementById('pass').addEventListener('keydown',e=>{ if(e.key==='Enter')enterDemo(); });
-
-    var menu = document.getElementById('menu');
-    menu.addEventListener('click', function(e){
-      var a = e.target.closest('a[data-view]'); if(!a) return;
-      e.preventDefault();
-      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-      document.getElementById('view-'+a.dataset.view).classList.add('active');
-      menu.querySelectorAll('a').forEach(x=>x.classList.remove('active'));
-      a.classList.add('active');
-      window.scrollTo({top:0});
-    });
-
-    function toast(msg){
-      var t=document.getElementById('flashToast');
-      if(!t){ t=document.createElement('div'); t.id='flashToast'; document.body.appendChild(t); }
-      t.textContent=msg; t.classList.add('show');
-      clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2400);
-    }
-
-    function clock(){ var d=new Date(); var p=n=>String(n).padStart(2,'0');
-      document.getElementById('clock').textContent = d.toLocaleDateString('vi-VN')+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); }
-    setInterval(clock,1000); clock();
-
-    if(location.hash){
-      var a=document.querySelector('a[data-view][href="'+location.hash+'"]');
-      if(a) a.click();
-    }
+    const LIVE_URL = "http://113.176.64.76:8080";
+    let n = 6;
+    const tick = () => {
+      document.getElementById("sec").textContent = n;
+      if (n <= 0) window.location.href = LIVE_URL;
+      n--;
+    };
+    setInterval(tick, 1000);
+    tick();
   </script>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="logo.svg" alt="TBSG">
+    <h1><strong>TBSG</strong> Integration</h1>
+    <div class="sub">Hệ thống quản lý ra/vào - chấm công - cảnh báo - camera (kết nối Gallagher &amp; SQL)</div>
+    <div class="badges">
+      <span class="badge">Gallagher LIVE</span>
+      <span class="badge">SQL Server</span>
+      <span class="badge">Camera RTSP</span>
+      <span class="badge">Cập nhật liên tục</span>
+    </div>
+    <a class="open" href="http://113.176.64.76:8080" target="_blank" rel="noopener">Mở toàn bộ hệ thống</a>
+    <div class="count">Tự chuyển sau <b id="sec">6</b> giây...</div>
+    <div class="note">Bản đầy đủ chạy trên máy chủ 24/7 (SQL Server + Gallagher Command Centre + camera).<br>
+      Nếu không mở được, kiểm tra đã cấu hình mở cổng 8080 trên modem/router chưa.</div>
+  </div>
 </body>
 </html>
